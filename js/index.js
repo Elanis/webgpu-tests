@@ -46,44 +46,6 @@ const VERTEX_SHADER = `
 	const context = canvas.getContext('gpupresent');
 
 	/**
-	 * Vertex buffer
-	 */
-	const triangleVertexBuffer = device.createBuffer({
-		size: 9 * Float32Array.BYTES_PER_ELEMENT,
-		//usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST // | GPUBufferUsage.RAY_TRACING
-		usage: GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.RAY_TRACING
-	});
-
-	await triangleVertexBuffer.mapAsync(GPUBufferUsage.MAP_WRITE);
-	const triangleVertexArrayBuffer = triangleVertexBuffer.getMappedRange();
-
-	const triangleVertices = new Float32Array(triangleVertexArrayBuffer);
-	triangleVertices.set([
-		 1.0,  1.0, 0.0,
-		-1.0,  1.0, 0.0,
-		 0.0, -1.0, 0.0
-	]);
-	triangleVertexBuffer.unmap();
-
-	/**
-	 * Index buffer
-	 */
-	const triangleIndexBuffer = device.createBuffer({
-		size: 3 * Uint32Array.BYTES_PER_ELEMENT,
-		//usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST // | GPUBufferUsage.RAY_TRACING
-		usage: GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.RAY_TRACING
-	});
-
-	await triangleIndexBuffer.mapAsync(GPUBufferUsage.MAP_WRITE);
-	const triangleIndicesArrayBuffer = triangleIndexBuffer.getMappedRange();
-
-	const triangleIndices = new Uint32Array(triangleIndicesArrayBuffer);
-	triangleIndices.set([
-		0, 1, 2
-	]);
-	triangleIndexBuffer.unmap();
-
-	/**
 	 * Swapchain
 	 */
 	const swapChain = context.configureSwapChain({
