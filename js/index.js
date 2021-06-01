@@ -1,38 +1,38 @@
 const SWAP_CHAIN_FORMAT = 'bgra8unorm';
 
 const FRAGMENT_SHADER = `
-    [[location(0)]] var<in> inColor : vec3<f32>;
-    [[location(0)]] var<out> outColor : vec4<f32>;
-  
     [[stage(fragment)]]
-    fn main() -> void {
-        outColor = vec4<f32>(inColor, 1.0);
-        return;
+    fn main([[location(0)]] inColor : vec3<f32>) -> [[location(0)]] vec4<f32> {
+        return vec4<f32>(inColor, 1.0);
     }
 `;
 
 const VERTEX_SHADER = `
-    const positions : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
+    let positions : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
 	    vec2<f32>(0.0, 0.5),
 	    vec2<f32>(-0.5, -0.5),
 	    vec2<f32>(0.5, -0.5)
     );
 
-    const colors : array<vec3<f32>, 3> = array<vec3<f32>, 3>(
+    let colors : array<vec3<f32>, 3> = array<vec3<f32>, 3>(
 	    vec3<f32>(1.0, 0.0, 0.0),
 	    vec3<f32>(0.0, 1.0, 0.0),
 	    vec3<f32>(0.0, 0.0, 1.0)
     );
-  
-    [[builtin(position)]] var<out> Position : vec4<f32>;
-    [[location(0)]] var<out> fragColor : vec3<f32>;
-    [[builtin(vertex_idx)]] var<in> VertexIndex : i32;
+
+	struct VertexOutput {
+	    [[builtin(position)]] Position : vec4<f32>;
+	    [[location(0)]] fragColor : vec3<f32>;
+	};
   
     [[stage(vertex)]]
-    fn main() -> void {
-        Position = vec4<f32>(positions[VertexIndex], 0.0, 1.0);
-        fragColor = colors[VertexIndex];
-        return;
+    fn main([[builtin(vertex_idx)]] VertexIndex : i32) -> VertexOutput {
+    	var vertexOutput : VertexOutput;
+
+        vertexOutput.Position = vec4<f32>(positions[VertexIndex], 0.0, 1.0);
+        vertexOutput.fragColor = colors[VertexIndex];
+
+        return vertexOutput;
     }
 `;
 
@@ -59,10 +59,12 @@ const VERTEX_SHADER = `
 	const vertexShaderModule = device.createShaderModule({
 		code: VERTEX_SHADER
 	});
+	console.log(await vertexShaderModule.compilationInfo());
 
 	const fragmentShaderModule = device.createShaderModule({
 		code: FRAGMENT_SHADER
 	});
+	console.log(await fragmentShaderModule.compilationInfo());
 
 	const pipeline = device.createRenderPipeline({
 		vertex: {
@@ -89,7 +91,7 @@ const VERTEX_SHADER = `
 
 	const renderPassDescriptor = {
 		colorAttachments: [{
-			attachment: textureView,
+			view: textureView,
 			loadValue: {
 				r: 0,
 				g: 0,
