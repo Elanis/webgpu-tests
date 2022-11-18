@@ -8,13 +8,13 @@ const FRAGMENT_SHADER = `
 `;
 
 const VERTEX_SHADER = `
-	const positions : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
+	const positions = array<vec2<f32>, 3>(
 		vec2<f32>(0.0, 0.5),
 		vec2<f32>(-0.5, -0.5),
 		vec2<f32>(0.5, -0.5)
 	);
 
-	const colors : array<vec3<f32>, 3> = array<vec3<f32>, 3>(
+	const colors = array<vec3<f32>, 3>(
 		vec3<f32>(1.0, 0.0, 0.0),
 		vec3<f32>(0.0, 1.0, 0.0),
 		vec3<f32>(0.0, 0.0, 1.0)
